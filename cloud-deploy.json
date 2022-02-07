@@ -58,8 +58,16 @@
             "defaultValue": "spoke-03-vm-ip",
             "type": "String"
         },
+        "azureFirewalls_AzureFirewall_we_hub_name": {
+            "defaultValue": "AzureFirewall_we-hub",
+            "type": "String"
+        },
         "bastionHosts_Bastion_infrastructure_name": {
             "defaultValue": "Bastion-infrastructure",
+            "type": "String"
+        },
+        "firewallPolicies_we_firewall_policy_name": {
+            "defaultValue": "we-firewall-policy",
             "type": "String"
         },
         "networkInterfaces_spoke_03_vm301_z1_name": {
@@ -101,6 +109,25 @@
     },
     "variables": {},
     "resources": [
+        {
+            "type": "Microsoft.Network/firewallPolicies",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('firewallPolicies_we_firewall_policy_name')]",
+            "location": "westeurope",
+            "properties": {
+                "sku": {
+                    "tier": "Premium"
+                },
+                "threatIntelMode": "Alert",
+                "threatIntelWhitelist": {
+                    "fqdns": [],
+                    "ipAddresses": []
+                },
+                "intrusionDetection": {
+                    "mode": "Off"
+                }
+            }
+        },
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-11-01",
@@ -425,6 +452,29 @@
             }
         },
         {
+            "type": "Microsoft.Network/firewallPolicies/ruleCollectionGroups",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('firewallPolicies_we_firewall_policy_name'), '/DefaultNetworkRuleCollectionGroup')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/firewallPolicies', parameters('firewallPolicies_we_firewall_policy_name'))]"
+            ],
+            "properties": {
+                "priority": 200,
+                "ruleCollections": [
+                    {
+                        "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
+                        "action": {
+                            "type": "Deny"
+                        },
+                        "rules": [],
+                        "name": "mycollection",
+                        "priority": 1000
+                    }
+                ]
+            }
+        },
+        {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-11-01",
             "name": "[parameters('networkInterfaces_spoke_01_vm484_name')]",
@@ -487,20 +537,6 @@
             "name": "[concat(parameters('virtualHubs_ne_hub_name'), '/defaultRouteTable')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_ne_hub_name'))]"
-            ],
-            "properties": {
-                "routes": [],
-                "labels": [
-                    "default"
-                ]
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualHubs/hubRouteTables",
-            "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualHubs_we_hub_name'), '/defaultRouteTable')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_we_hub_name'))]"
             ],
             "properties": {
                 "routes": [],
@@ -913,6 +949,40 @@
             }
         },
         {
+            "type": "Microsoft.Network/azureFirewalls",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('azureFirewalls_AzureFirewall_we_hub_name')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_we_hub_name'))]",
+                "[resourceId('Microsoft.Network/firewallPolicies', parameters('firewallPolicies_we_firewall_policy_name'))]"
+            ],
+            "properties": {
+                "sku": {
+                    "name": "AZFW_Hub",
+                    "tier": "Premium"
+                },
+                "additionalProperties": {},
+                "virtualHub": {
+                    "id": "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_we_hub_name'))]"
+                },
+                "hubIPAddresses": {
+                    "privateIPAddress": "10.12.1.132",
+                    "publicIPs": {
+                        "addresses": [
+                            {
+                                "address": "51.124.240.240"
+                            }
+                        ],
+                        "count": 1
+                    }
+                },
+                "firewallPolicy": {
+                    "id": "[resourceId('Microsoft.Network/firewallPolicies', parameters('firewallPolicies_we_firewall_policy_name'))]"
+                }
+            }
+        },
+        {
             "type": "Microsoft.Network/bastionHosts",
             "apiVersion": "2020-11-01",
             "name": "[parameters('bastionHosts_Bastion_infrastructure_name')]",
@@ -1011,34 +1081,30 @@
             }
         },
         {
-            "type": "Microsoft.Network/virtualHubs",
+            "type": "Microsoft.Network/virtualHubs/hubRouteTables",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('virtualHubs_we_hub_name')]",
-            "location": "westeurope",
+            "name": "[concat(parameters('virtualHubs_we_hub_name'), '/defaultRouteTable')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualWans', parameters('virtualWans_contoso_wan_name'))]",
-                "[resourceId('Microsoft.Network/vpnGateways', parameters('vpnGateways_615bd6310df74cdaae7952dbb7520249_westeurope_gw_name'))]"
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_we_hub_name'))]",
+                "[resourceId('Microsoft.Network/azureFirewalls', parameters('azureFirewalls_AzureFirewall_we_hub_name'))]"
             ],
             "properties": {
-                "virtualHubRouteTableV2s": [],
-                "addressPrefix": "10.12.1.0/24",
-                "virtualRouterAsn": 65515,
-                "virtualRouterIps": [
-                    "10.12.1.69",
-                    "10.12.1.68"
+                "routes": [
+                    {
+                        "name": "private_traffic",
+                        "destinationType": "CIDR",
+                        "destinations": [
+                            "10.0.0.0/8",
+                            "172.16.0.0/12",
+                            "192.168.0.0/16"
+                        ],
+                        "nextHopType": "ResourceId",
+                        "nextHop": "[resourceId('Microsoft.Network/azureFirewalls', parameters('azureFirewalls_AzureFirewall_we_hub_name'))]"
+                    }
                 ],
-                "routeTable": {
-                    "routes": []
-                },
-                "virtualWan": {
-                    "id": "[resourceId('Microsoft.Network/virtualWans', parameters('virtualWans_contoso_wan_name'))]"
-                },
-                "vpnGateway": {
-                    "id": "[resourceId('Microsoft.Network/vpnGateways', parameters('vpnGateways_615bd6310df74cdaae7952dbb7520249_westeurope_gw_name'))]"
-                },
-                "sku": "Standard",
-                "routingState": "Provisioned",
-                "allowBranchToBranchTraffic": false
+                "labels": [
+                    "default"
+                ]
             }
         },
         {
@@ -1189,6 +1255,41 @@
             }
         },
         {
+            "type": "Microsoft.Network/virtualHubs",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('virtualHubs_we_hub_name')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualWans', parameters('virtualWans_contoso_wan_name'))]",
+                "[resourceId('Microsoft.Network/vpnGateways', parameters('vpnGateways_615bd6310df74cdaae7952dbb7520249_westeurope_gw_name'))]",
+                "[resourceId('Microsoft.Network/azureFirewalls', parameters('azureFirewalls_AzureFirewall_we_hub_name'))]"
+            ],
+            "properties": {
+                "virtualHubRouteTableV2s": [],
+                "addressPrefix": "10.12.1.0/24",
+                "virtualRouterAsn": 65515,
+                "virtualRouterIps": [
+                    "10.12.1.69",
+                    "10.12.1.68"
+                ],
+                "routeTable": {
+                    "routes": []
+                },
+                "virtualWan": {
+                    "id": "[resourceId('Microsoft.Network/virtualWans', parameters('virtualWans_contoso_wan_name'))]"
+                },
+                "vpnGateway": {
+                    "id": "[resourceId('Microsoft.Network/vpnGateways', parameters('vpnGateways_615bd6310df74cdaae7952dbb7520249_westeurope_gw_name'))]"
+                },
+                "azureFirewall": {
+                    "id": "[resourceId('Microsoft.Network/azureFirewalls', parameters('azureFirewalls_AzureFirewall_we_hub_name'))]"
+                },
+                "sku": "Standard",
+                "routingState": "Provisioned",
+                "allowBranchToBranchTraffic": false
+            }
+        },
+        {
             "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
             "apiVersion": "2020-11-01",
             "name": "[concat(parameters('virtualHubs_ne_hub_name'), '/ne-to-spoke-03')]",
@@ -1218,78 +1319,6 @@
                 },
                 "remoteVirtualNetwork": {
                     "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_03_name'))]"
-                },
-                "allowHubToRemoteVnetTransit": true,
-                "allowRemoteVnetToUseHubVnetGateways": true,
-                "enableInternetSecurity": true
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
-            "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualHubs_we_hub_name'), '/we-to-spoke-01')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_we_hub_name'))]",
-                "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]"
-            ],
-            "properties": {
-                "routingConfiguration": {
-                    "associatedRouteTable": {
-                        "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]"
-                    },
-                    "propagatedRouteTables": {
-                        "labels": [
-                            "default"
-                        ],
-                        "ids": [
-                            {
-                                "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]"
-                            }
-                        ]
-                    },
-                    "vnetRoutes": {
-                        "staticRoutes": []
-                    }
-                },
-                "remoteVirtualNetwork": {
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]"
-                },
-                "allowHubToRemoteVnetTransit": true,
-                "allowRemoteVnetToUseHubVnetGateways": true,
-                "enableInternetSecurity": true
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
-            "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualHubs_we_hub_name'), '/we-to-spoke-02')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_we_hub_name'))]",
-                "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]"
-            ],
-            "properties": {
-                "routingConfiguration": {
-                    "associatedRouteTable": {
-                        "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]"
-                    },
-                    "propagatedRouteTables": {
-                        "labels": [
-                            "default"
-                        ],
-                        "ids": [
-                            {
-                                "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]"
-                            }
-                        ]
-                    },
-                    "vnetRoutes": {
-                        "staticRoutes": []
-                    }
-                },
-                "remoteVirtualNetwork": {
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]"
                 },
                 "allowHubToRemoteVnetTransit": true,
                 "allowRemoteVnetToUseHubVnetGateways": true,
@@ -1393,6 +1422,80 @@
                     }
                 ],
                 "enableDdosProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualHubs_we_hub_name'), '/we-to-spoke-01')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_we_hub_name'))]",
+                "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]",
+                "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'noneRouteTable')]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]"
+            ],
+            "properties": {
+                "routingConfiguration": {
+                    "associatedRouteTable": {
+                        "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]"
+                    },
+                    "propagatedRouteTables": {
+                        "labels": [
+                            "none"
+                        ],
+                        "ids": [
+                            {
+                                "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'noneRouteTable')]"
+                            }
+                        ]
+                    },
+                    "vnetRoutes": {
+                        "staticRoutes": []
+                    }
+                },
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]"
+                },
+                "allowHubToRemoteVnetTransit": true,
+                "allowRemoteVnetToUseHubVnetGateways": true,
+                "enableInternetSecurity": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualHubs_we_hub_name'), '/we-to-spoke-02')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_we_hub_name'))]",
+                "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]",
+                "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'noneRouteTable')]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]"
+            ],
+            "properties": {
+                "routingConfiguration": {
+                    "associatedRouteTable": {
+                        "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]"
+                    },
+                    "propagatedRouteTables": {
+                        "labels": [
+                            "none"
+                        ],
+                        "ids": [
+                            {
+                                "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'noneRouteTable')]"
+                            }
+                        ]
+                    },
+                    "vnetRoutes": {
+                        "staticRoutes": []
+                    }
+                },
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]"
+                },
+                "allowHubToRemoteVnetTransit": true,
+                "allowRemoteVnetToUseHubVnetGateways": true,
+                "enableInternetSecurity": false
             }
         }
     ]
