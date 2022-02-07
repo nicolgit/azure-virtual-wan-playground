@@ -38,12 +38,12 @@
             "defaultValue": "spoke-03-vm",
             "type": "String"
         },
-        "virtualNetworks_bastion_net_name": {
-            "defaultValue": "bastion-net",
-            "type": "String"
-        },
         "networkInterfaces_spoke_02_vm70_name": {
             "defaultValue": "spoke-02-vm70",
+            "type": "String"
+        },
+        "virtualNetworks_bastion_network_name": {
+            "defaultValue": "bastion-network",
             "type": "String"
         },
         "networkInterfaces_spoke_01_vm484_name": {
@@ -58,8 +58,8 @@
             "defaultValue": "spoke-03-vm-ip",
             "type": "String"
         },
-        "bastionHosts_bastion_infrastructure_name": {
-            "defaultValue": "bastion-infrastructure",
+        "bastionHosts_Bastion_infrastructure_name": {
+            "defaultValue": "Bastion-infrastructure",
             "type": "String"
         },
         "networkInterfaces_spoke_03_vm301_z1_name": {
@@ -86,8 +86,8 @@
             "defaultValue": "615bd6310df74cdaae7952dbb7520249-westeurope-gw",
             "type": "String"
         },
-        "routeTables__e41f87a2_AZBST_RT_bad04f74_bd71_48de_910c_655f220ccbdb_externalid": {
-            "defaultValue": "/subscriptions/fd2e7838-f820-4753-b087-68daf0e54383/resourceGroups/virtual-wan-playground/providers/Microsoft.Network/routeTables/_e41f87a2_AZBST_RT_bad04f74-bd71-48de-910c-655f220ccbdb",
+        "routeTables__e41f87a2_AZBST_RT_50af2c3f_b819_4739_b2f6_30ed8fd327df_externalid": {
+            "defaultValue": "/subscriptions/fd2e7838-f820-4753-b087-68daf0e54383/resourceGroups/virtual-wan-playground/providers/Microsoft.Network/routeTables/_e41f87a2_AZBST_RT_50af2c3f-b819-4739-b2f6-30ed8fd327df",
             "type": "String"
         },
         "virtualNetworks_HV_we_hub_4ea1dbcb_865d_4038_beed_933b8c532770_externalid": {
@@ -111,7 +111,7 @@
                 "tier": "Regional"
             },
             "properties": {
-                "ipAddress": "20.71.179.220",
+                "ipAddress": "20.123.154.104",
                 "publicIPAddressVersion": "IPv4",
                 "publicIPAllocationMethod": "Static",
                 "idleTimeoutInMinutes": 4,
@@ -153,180 +153,6 @@
                 "publicIPAllocationMethod": "Static",
                 "idleTimeoutInMinutes": 4,
                 "ipTags": []
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks",
-            "apiVersion": "2020-11-01",
-            "name": "[parameters('virtualNetworks_bastion_net_name')]",
-            "location": "westeurope",
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "10.12.2.0/24",
-                        "10.12.3.0/24"
-                    ]
-                },
-                "subnets": [
-                    {
-                        "name": "default",
-                        "properties": {
-                            "addressPrefix": "10.12.3.0/24",
-                            "delegations": [],
-                            "privateEndpointNetworkPolicies": "Enabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
-                        }
-                    },
-                    {
-                        "name": "AzureBastionSubnet",
-                        "properties": {
-                            "addressPrefix": "10.12.2.0/24",
-                            "routeTable": {
-                                "id": "[parameters('routeTables__e41f87a2_AZBST_RT_bad04f74_bd71_48de_910c_655f220ccbdb_externalid')]"
-                            },
-                            "delegations": [],
-                            "privateEndpointNetworkPolicies": "Enabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
-                        }
-                    }
-                ],
-                "virtualNetworkPeerings": [],
-                "enableDdosProtection": false
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks",
-            "apiVersion": "2020-11-01",
-            "name": "[parameters('virtualNetworks_spoke_01_name')]",
-            "location": "westeurope",
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "10.13.1.0/24"
-                    ]
-                },
-                "subnets": [
-                    {
-                        "name": "default",
-                        "properties": {
-                            "addressPrefix": "10.13.1.0/24",
-                            "delegations": [],
-                            "privateEndpointNetworkPolicies": "Enabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
-                        }
-                    }
-                ],
-                "virtualNetworkPeerings": [
-                    {
-                        "name": "RemoteVnetToHubPeering_70c4bc5c-ea9d-4e5e-87a2-f55d20cd4f1e",
-                        "properties": {
-                            "peeringState": "Connected",
-                            "remoteVirtualNetwork": {
-                                "id": "[parameters('virtualNetworks_HV_we_hub_4ea1dbcb_865d_4038_beed_933b8c532770_externalid')]"
-                            },
-                            "allowVirtualNetworkAccess": true,
-                            "allowForwardedTraffic": false,
-                            "allowGatewayTransit": false,
-                            "useRemoteGateways": true,
-                            "remoteAddressSpace": {
-                                "addressPrefixes": [
-                                    "10.12.1.0/24"
-                                ]
-                            }
-                        }
-                    }
-                ],
-                "enableDdosProtection": false
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks",
-            "apiVersion": "2020-11-01",
-            "name": "[parameters('virtualNetworks_spoke_02_name')]",
-            "location": "westeurope",
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "10.13.2.0/24"
-                    ]
-                },
-                "subnets": [
-                    {
-                        "name": "default",
-                        "properties": {
-                            "addressPrefix": "10.13.2.0/24",
-                            "delegations": [],
-                            "privateEndpointNetworkPolicies": "Enabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
-                        }
-                    }
-                ],
-                "virtualNetworkPeerings": [
-                    {
-                        "name": "RemoteVnetToHubPeering_70c4bc5c-ea9d-4e5e-87a2-f55d20cd4f1e",
-                        "properties": {
-                            "peeringState": "Connected",
-                            "remoteVirtualNetwork": {
-                                "id": "[parameters('virtualNetworks_HV_we_hub_4ea1dbcb_865d_4038_beed_933b8c532770_externalid')]"
-                            },
-                            "allowVirtualNetworkAccess": true,
-                            "allowForwardedTraffic": false,
-                            "allowGatewayTransit": false,
-                            "useRemoteGateways": true,
-                            "remoteAddressSpace": {
-                                "addressPrefixes": [
-                                    "10.12.1.0/24"
-                                ]
-                            }
-                        }
-                    }
-                ],
-                "enableDdosProtection": false
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks",
-            "apiVersion": "2020-11-01",
-            "name": "[parameters('virtualNetworks_spoke_03_name')]",
-            "location": "northeurope",
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "10.13.3.0/24"
-                    ]
-                },
-                "subnets": [
-                    {
-                        "name": "default",
-                        "properties": {
-                            "addressPrefix": "10.13.3.0/24",
-                            "delegations": [],
-                            "privateEndpointNetworkPolicies": "Enabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
-                        }
-                    }
-                ],
-                "virtualNetworkPeerings": [
-                    {
-                        "name": "RemoteVnetToHubPeering_4715f9e1-eb2a-435c-a885-b7c22c6a5928",
-                        "properties": {
-                            "peeringState": "Connected",
-                            "remoteVirtualNetwork": {
-                                "id": "[parameters('virtualNetworks_HV_ne_hub_eb45f9be_728d_49df_98b2_825d0a7d16c3_externalid')]"
-                            },
-                            "allowVirtualNetworkAccess": true,
-                            "allowForwardedTraffic": false,
-                            "allowGatewayTransit": false,
-                            "useRemoteGateways": true,
-                            "remoteAddressSpace": {
-                                "addressPrefixes": [
-                                    "10.12.2.0/24"
-                                ]
-                            }
-                        }
-                    }
-                ],
-                "enableDdosProtection": false
             }
         },
         {
@@ -712,16 +538,217 @@
             }
         },
         {
-            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualNetworks_bastion_net_name'), '/AzureBastionSubnet')]",
+            "name": "[parameters('virtualNetworks_spoke_01_name')]",
+            "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_net_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]"
             ],
             "properties": {
-                "addressPrefix": "10.12.2.0/24",
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.13.1.0/24"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "properties": {
+                            "addressPrefix": "10.13.1.0/24",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": [
+                    {
+                        "name": "RemoteVnetToHubPeering_70c4bc5c-ea9d-4e5e-87a2-f55d20cd4f1e",
+                        "properties": {
+                            "peeringState": "Connected",
+                            "remoteVirtualNetwork": {
+                                "id": "[parameters('virtualNetworks_HV_we_hub_4ea1dbcb_865d_4038_beed_933b8c532770_externalid')]"
+                            },
+                            "allowVirtualNetworkAccess": true,
+                            "allowForwardedTraffic": false,
+                            "allowGatewayTransit": false,
+                            "useRemoteGateways": true,
+                            "remoteAddressSpace": {
+                                "addressPrefixes": [
+                                    "10.12.1.0/24"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "name": "[concat(parameters('virtualNetworks_spoke_01_name'), '-to-bastion')]",
+                        "properties": {
+                            "peeringState": "Connected",
+                            "remoteVirtualNetwork": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]"
+                            },
+                            "allowVirtualNetworkAccess": true,
+                            "allowForwardedTraffic": true,
+                            "allowGatewayTransit": false,
+                            "useRemoteGateways": false,
+                            "remoteAddressSpace": {
+                                "addressPrefixes": [
+                                    "10.12.100.0/24",
+                                    "10.12.101.0/24"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "enableDdosProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('virtualNetworks_spoke_02_name')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.13.2.0/24"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "properties": {
+                            "addressPrefix": "10.13.2.0/24",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": [
+                    {
+                        "name": "RemoteVnetToHubPeering_70c4bc5c-ea9d-4e5e-87a2-f55d20cd4f1e",
+                        "properties": {
+                            "peeringState": "Connected",
+                            "remoteVirtualNetwork": {
+                                "id": "[parameters('virtualNetworks_HV_we_hub_4ea1dbcb_865d_4038_beed_933b8c532770_externalid')]"
+                            },
+                            "allowVirtualNetworkAccess": true,
+                            "allowForwardedTraffic": false,
+                            "allowGatewayTransit": false,
+                            "useRemoteGateways": true,
+                            "remoteAddressSpace": {
+                                "addressPrefixes": [
+                                    "10.12.1.0/24"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "name": "[concat(parameters('virtualNetworks_spoke_02_name'), '-to-bastion')]",
+                        "properties": {
+                            "peeringState": "Connected",
+                            "remoteVirtualNetwork": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]"
+                            },
+                            "allowVirtualNetworkAccess": true,
+                            "allowForwardedTraffic": true,
+                            "allowGatewayTransit": false,
+                            "useRemoteGateways": false,
+                            "remoteAddressSpace": {
+                                "addressPrefixes": [
+                                    "10.12.100.0/24",
+                                    "10.12.101.0/24"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "enableDdosProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('virtualNetworks_spoke_03_name')]",
+            "location": "northeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.13.3.0/24"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "properties": {
+                            "addressPrefix": "10.13.3.0/24",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": [
+                    {
+                        "name": "RemoteVnetToHubPeering_4715f9e1-eb2a-435c-a885-b7c22c6a5928",
+                        "properties": {
+                            "peeringState": "Connected",
+                            "remoteVirtualNetwork": {
+                                "id": "[parameters('virtualNetworks_HV_ne_hub_eb45f9be_728d_49df_98b2_825d0a7d16c3_externalid')]"
+                            },
+                            "allowVirtualNetworkAccess": true,
+                            "allowForwardedTraffic": false,
+                            "allowGatewayTransit": false,
+                            "useRemoteGateways": true,
+                            "remoteAddressSpace": {
+                                "addressPrefixes": [
+                                    "10.12.2.0/24"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "name": "[concat(parameters('virtualNetworks_spoke_03_name'), '-to-bastion')]",
+                        "properties": {
+                            "peeringState": "Connected",
+                            "remoteVirtualNetwork": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]"
+                            },
+                            "allowVirtualNetworkAccess": true,
+                            "allowForwardedTraffic": true,
+                            "allowGatewayTransit": false,
+                            "useRemoteGateways": false,
+                            "remoteAddressSpace": {
+                                "addressPrefixes": [
+                                    "10.12.100.0/24",
+                                    "10.12.101.0/24"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "enableDdosProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworks_bastion_network_name'), '/AzureBastionSubnet')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.12.100.0/24",
                 "routeTable": {
-                    "id": "[parameters('routeTables__e41f87a2_AZBST_RT_bad04f74_bd71_48de_910c_655f220ccbdb_externalid')]"
+                    "id": "[parameters('routeTables__e41f87a2_AZBST_RT_50af2c3f_b819_4739_b2f6_30ed8fd327df_externalid')]"
                 },
                 "delegations": [],
                 "privateEndpointNetworkPolicies": "Enabled",
@@ -731,12 +758,12 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualNetworks_bastion_net_name'), '/default')]",
+            "name": "[concat(parameters('virtualNetworks_bastion_network_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_net_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]"
             ],
             "properties": {
-                "addressPrefix": "10.12.3.0/24",
+                "addressPrefix": "10.12.101.0/24",
                 "delegations": [],
                 "privateEndpointNetworkPolicies": "Enabled",
                 "privateLinkServiceNetworkPolicies": "Enabled"
@@ -888,17 +915,17 @@
         {
             "type": "Microsoft.Network/bastionHosts",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('bastionHosts_bastion_infrastructure_name')]",
+            "name": "[parameters('bastionHosts_Bastion_infrastructure_name')]",
             "location": "westeurope",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_bastion_public_ip_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_bastion_net_name'), 'AzureBastionSubnet')]"
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_bastion_network_name'), 'AzureBastionSubnet')]"
             ],
             "sku": {
                 "name": "Basic"
             },
             "properties": {
-                "dnsName": "bst-bad04f74-bd71-48de-910c-655f220ccbdb.bastion.azure.com",
+                "dnsName": "bst-50af2c3f-b819-4739-b2f6-30ed8fd327df.bastion.azure.com",
                 "ipConfigurations": [
                     {
                         "name": "IpConf",
@@ -908,7 +935,7 @@
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_bastion_public_ip_name'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_bastion_net_name'), 'AzureBastionSubnet')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_bastion_network_name'), 'AzureBastionSubnet')]"
                             }
                         }
                     }
@@ -1012,6 +1039,153 @@
                 "sku": "Standard",
                 "routingState": "Provisioned",
                 "allowBranchToBranchTraffic": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworks_bastion_network_name'), '/bastion-to-spoke-01')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]"
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.13.1.0/24"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworks_bastion_network_name'), '/bastion-to-spoke-02')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]"
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.13.2.0/24"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworks_bastion_network_name'), '/bastion-to-spoke-03')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_03_name'))]"
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_03_name'))]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.13.3.0/24"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworks_spoke_01_name'), '/', parameters('virtualNetworks_spoke_01_name'), '-to-bastion')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]"
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.12.100.0/24",
+                        "10.12.101.0/24"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworks_spoke_02_name'), '/', parameters('virtualNetworks_spoke_02_name'), '-to-bastion')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]"
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.12.100.0/24",
+                        "10.12.101.0/24"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualNetworks_spoke_03_name'), '/', parameters('virtualNetworks_spoke_03_name'), '-to-bastion')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_03_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]"
+            ],
+            "properties": {
+                "peeringState": "Connected",
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_bastion_network_name'))]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "10.12.100.0/24",
+                        "10.12.101.0/24"
+                    ]
+                }
             }
         },
         {
@@ -1120,6 +1294,105 @@
                 "allowHubToRemoteVnetTransit": true,
                 "allowRemoteVnetToUseHubVnetGateways": true,
                 "enableInternetSecurity": true
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('virtualNetworks_bastion_network_name')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_03_name'))]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.12.100.0/24",
+                        "10.12.101.0/24"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "properties": {
+                            "addressPrefix": "10.12.101.0/24",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    },
+                    {
+                        "name": "AzureBastionSubnet",
+                        "properties": {
+                            "addressPrefix": "10.12.100.0/24",
+                            "routeTable": {
+                                "id": "[parameters('routeTables__e41f87a2_AZBST_RT_50af2c3f_b819_4739_b2f6_30ed8fd327df_externalid')]"
+                            },
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": [
+                    {
+                        "name": "bastion-to-spoke-01",
+                        "properties": {
+                            "peeringState": "Connected",
+                            "remoteVirtualNetwork": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]"
+                            },
+                            "allowVirtualNetworkAccess": true,
+                            "allowForwardedTraffic": true,
+                            "allowGatewayTransit": false,
+                            "useRemoteGateways": false,
+                            "remoteAddressSpace": {
+                                "addressPrefixes": [
+                                    "10.13.1.0/24"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "name": "bastion-to-spoke-02",
+                        "properties": {
+                            "peeringState": "Connected",
+                            "remoteVirtualNetwork": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]"
+                            },
+                            "allowVirtualNetworkAccess": true,
+                            "allowForwardedTraffic": true,
+                            "allowGatewayTransit": false,
+                            "useRemoteGateways": false,
+                            "remoteAddressSpace": {
+                                "addressPrefixes": [
+                                    "10.13.2.0/24"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "name": "bastion-to-spoke-03",
+                        "properties": {
+                            "peeringState": "Connected",
+                            "remoteVirtualNetwork": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_03_name'))]"
+                            },
+                            "allowVirtualNetworkAccess": true,
+                            "allowForwardedTraffic": true,
+                            "allowGatewayTransit": false,
+                            "useRemoteGateways": false,
+                            "remoteAddressSpace": {
+                                "addressPrefixes": [
+                                    "10.13.3.0/24"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "enableDdosProtection": false
             }
         }
     ]
