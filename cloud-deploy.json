@@ -10,6 +10,10 @@
             "defaultValue": "we-hub",
             "type": "String"
         },
+        "virtualHubs_ac_hub_name": {
+            "defaultValue": "australia-hub",
+            "type": "String"
+        },
         "virtualWans_contoso_wan_name": {
             "defaultValue": "contoso-wan",
             "type": "String"
@@ -226,6 +230,33 @@
         {
             "type": "Microsoft.Network/virtualHubs",
             "apiVersion": "2020-11-01",
+            "name": "[parameters('virtualHubs_ac_hub_name')]",
+            "location": "australiacentral",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualWans', parameters('virtualWans_contoso_wan_name'))]"
+            ],
+            "properties": {
+                "virtualHubRouteTableV2s": [],
+                "addressPrefix": "10.12.3.0/24",
+                "virtualRouterAsn": 65515,
+                "virtualRouterIps": [
+                    "10.12.3.69",
+                    "10.12.3.68"
+                ],
+                "routeTable": {
+                    "routes": []
+                },
+                "virtualWan": {
+                    "id": "[resourceId('Microsoft.Network/virtualWans', parameters('virtualWans_contoso_wan_name'))]"
+                },
+                "sku": "Standard",
+                "routingState": "Provisioned",
+                "allowBranchToBranchTraffic": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualHubs",
+            "apiVersion": "2020-11-01",
             "name": "[parameters('virtualHubs_we_hub_name')]",
             "location": "westeurope",
             "dependsOn": [
@@ -317,6 +348,20 @@
         {
             "type": "Microsoft.Network/virtualHubs/hubRouteTables",
             "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualHubs_ac_hub_name'), '/defaultRouteTable')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_ac_hub_name'))]"
+            ],
+            "properties": {
+                "routes": [],
+                "labels": [
+                    "default"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualHubs/hubRouteTables",
+            "apiVersion": "2020-11-01",
             "name": "[concat(parameters('virtualHubs_ne_hub_name'), '/noneRouteTable')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_ne_hub_name'))]"
@@ -334,6 +379,20 @@
             "name": "[concat(parameters('virtualHubs_we_hub_name'), '/noneRouteTable')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_we_hub_name'))]"
+            ],
+            "properties": {
+                "routes": [],
+                "labels": [
+                    "none"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualHubs/hubRouteTables",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualHubs_ac_hub_name'), '/noneRouteTable')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_ac_hub_name'))]"
             ],
             "properties": {
                 "routes": [],
