@@ -46,6 +46,14 @@
             "defaultValue": "vpn-westeurope-gw",
             "type": "String"
         },
+        "azureFirewalls_AzureFirewall_we_hub_name": {
+            "defaultValue": "we-hub-firewall",
+            "type": "String"
+        },
+        "firewallPolicies_we_firewall_policy_name": {
+            "defaultValue": "we-firewall-policy",
+            "type": "String"
+        },
         "VM_Username": {
             "defaultValue": "nicola",
             "type": "String"
@@ -682,6 +690,59 @@
                     ]
                 }
             }
-        }
+        },
+        {
+            "type": "Microsoft.Network/firewallPolicies",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('firewallPolicies_we_firewall_policy_name')]",
+            "location": "westeurope",
+            "properties": {
+                "sku": {
+                    "tier": "Premium"
+                },
+                "threatIntelMode": "Alert",
+                "threatIntelWhitelist": {
+                    "fqdns": [],
+                    "ipAddresses": []
+                },
+                "intrusionDetection": {
+                    "mode": "Off"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/azureFirewalls",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('azureFirewalls_AzureFirewall_we_hub_name')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_we_hub_name'))]",
+                "[resourceId('Microsoft.Network/firewallPolicies', parameters('firewallPolicies_we_firewall_policy_name'))]"
+            ],
+            "properties": {
+                "sku": {
+                    "name": "AZFW_Hub",
+                    "tier": "Premium"
+                },
+                "additionalProperties": {},
+                "virtualHub": {
+                    "id": "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_we_hub_name'))]"
+                },
+                "hubIPAddresses": {
+                    "privateIPAddress": "10.12.1.132",
+                    "publicIPs": {
+                        "addresses": [
+                            {
+                                "address": "40.115.55.252"
+                            }
+                        ],
+                        "count": 1
+                    }
+                },
+                "firewallPolicy": {
+                    "id": "[resourceId('Microsoft.Network/firewallPolicies', parameters('firewallPolicies_we_firewall_policy_name'))]"
+                }
+            }
+        },
     ]
 }
