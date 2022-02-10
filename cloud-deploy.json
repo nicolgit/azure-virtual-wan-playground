@@ -284,6 +284,78 @@
         {
             "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
             "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualHubs_we_hub_name'), '/we-to-spoke-01')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_we_hub_name'))]",
+                "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]"
+            ],
+            "properties": {
+                "routingConfiguration": {
+                    "associatedRouteTable": {
+                        "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]"
+                    },
+                    "propagatedRouteTables": {
+                        "labels": [
+                            "default"
+                        ],
+                        "ids": [
+                            {
+                                "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]"
+                            }
+                        ]
+                    },
+                    "vnetRoutes": {
+                        "staticRoutes": []
+                    }
+                },
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]"
+                },
+                "allowHubToRemoteVnetTransit": true,
+                "allowRemoteVnetToUseHubVnetGateways": true,
+                "enableInternetSecurity": true
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('virtualHubs_we_hub_name'), '/we-to-spoke-02')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_we_hub_name'))]",
+                "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]"
+            ],
+            "properties": {
+                "routingConfiguration": {
+                    "associatedRouteTable": {
+                        "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]"
+                    },
+                    "propagatedRouteTables": {
+                        "labels": [
+                            "default"
+                        ],
+                        "ids": [
+                            {
+                                "id": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]"
+                            }
+                        ]
+                    },
+                    "vnetRoutes": {
+                        "staticRoutes": []
+                    }
+                },
+                "remoteVirtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]"
+                },
+                "allowHubToRemoteVnetTransit": true,
+                "allowRemoteVnetToUseHubVnetGateways": true,
+                "enableInternetSecurity": true
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
+            "apiVersion": "2020-11-01",
             "name": "[concat(parameters('virtualHubs_ne_hub_name'), '/ne-to-spoke-03')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_ne_hub_name'))]",
