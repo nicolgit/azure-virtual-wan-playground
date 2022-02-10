@@ -743,6 +743,6 @@
                     "id": "[resourceId('Microsoft.Network/firewallPolicies', parameters('firewallPolicies_we_firewall_policy_name'))]"
                 }
             }
-        },
+        }
     ]
 }
