@@ -214,7 +214,8 @@
             "name": "[parameters('virtualHubs_ne_hub_name')]",
             "location": "northeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualWans', parameters('virtualWans_contoso_wan_name'))]"
+                "[resourceId('Microsoft.Network/virtualWans', parameters('virtualWans_contoso_wan_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_03_name'))]"
             ],
             "properties": {
                 "virtualHubRouteTableV2s": [],
@@ -241,7 +242,9 @@
             "name": "[parameters('virtualHubs_ac_hub_name')]",
             "location": "australiacentral",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualWans', parameters('virtualWans_contoso_wan_name'))]"
+                "[resourceId('Microsoft.Network/virtualWans', parameters('virtualWans_contoso_wan_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_01_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]"
             ],
             "properties": {
                 "virtualHubRouteTableV2s": [],
@@ -330,6 +333,12 @@
             "apiVersion": "2020-11-01",
             "name": "[concat(parameters('virtualHubs_we_hub_name'), '/we-to-spoke-02')]",
             "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_bastion_network_name'),'bastion-to-spoke01')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_bastion_network_name'),'bastion-to-spoke02')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_bastion_network_name'),'bastion-to-spoke03')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_spoke_01_name'),'spoke01-to-bastion')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_spoke_02_name'),'spoke02-to-bastion')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_spoke_03_name'),'spoke03-to-bastion')]",
                 "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_we_hub_name'))]",
                 "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]",
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]"
@@ -366,6 +375,12 @@
             "apiVersion": "2020-11-01",
             "name": "[concat(parameters('virtualHubs_ne_hub_name'), '/ne-to-spoke-03')]",
             "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_bastion_network_name'),'bastion-to-spoke01')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_bastion_network_name'),'bastion-to-spoke02')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_bastion_network_name'),'bastion-to-spoke03')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_spoke_01_name'),'spoke01-to-bastion')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_spoke_02_name'),'spoke02-to-bastion')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_spoke_03_name'),'spoke03-to-bastion')]",
                 "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_ne_hub_name'))]",
                 "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_ne_hub_name'), 'defaultRouteTable')]",
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_03_name'))]"
