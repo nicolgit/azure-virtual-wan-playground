@@ -16,7 +16,7 @@ You can use the following button to deploy the demo to your Azure subscription:
 
 
 
-![lab architecture](images\lab-architecture.png)
+![lab architecture](images/lab-architecture.png)
 
 
 understand this configuration: https://blog.cloudtrooper.net/2020/11/17/virtual-wan-secure-hubs-in-multiple-region
