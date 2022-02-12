@@ -437,7 +437,7 @@
                     }
                 },
                 "remoteVirtualNetwork": {
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_02_name'))]"
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_spoke_04_name'))]"
                 },
                 "allowHubToRemoteVnetTransit": true,
                 "allowRemoteVnetToUseHubVnetGateways": true,
