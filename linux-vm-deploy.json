@@ -35,7 +35,7 @@
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2021-07-01",
             "name": "[parameters('virtualMachines_templateVMname_name')]",
-            "location": "parameters('virtualmachine_region')]",
+            "location": "[parameters('virtualmachine_region')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('virtualMachines_networkinterface_name'))]"
             ],
@@ -98,7 +98,7 @@
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-11-01",
             "name": "[variables('virtualMachines_networkinterface_name')]",
-            "location": "parameters('virtualmachine_region')]",
+            "location": "[parameters('virtualmachine_region')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_name'), parameters('virtualNetworks_subnet'))]"
             ],
