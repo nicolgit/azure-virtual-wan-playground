@@ -134,7 +134,7 @@
                 "status": "Enabled",
                 "taskType": "ComputeVmShutdownTask",
                 "dailyRecurrence": {
-                    "time": "1900"
+                    "time": "2200"
                 },
                 "timeZoneId": "UTC",
                 "notificationSettings": {
