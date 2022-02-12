@@ -22,6 +22,3 @@ You can use the following button to deploy the demo to your Azure subscription:
 
 understand this configuration: https://blog.cloudtrooper.net/2020/11/17/virtual-wan-secure-hubs-in-multiple-region
 
-
-
-test deploy VM [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fazure-virtual-wan-playground%2Fmain%2Flinux-vm-deploy.json)
