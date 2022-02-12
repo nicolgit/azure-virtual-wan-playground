@@ -11,6 +11,7 @@ You can use the following button to deploy the demo to your Azure subscription:
 | playground parts| &nbsp; |
 |---|---|
 | deploys virtual WAN playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fazure-virtual-wan-playground%2Fmain%2Fcloud-deploy.json)
+| connect vNets to hubs | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fazure-virtual-wan-playground%2Fmain%2Fvnet-connections-deploy.json)
 
 
 
