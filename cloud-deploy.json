@@ -339,7 +339,9 @@
                 "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_spoke_01_name'),'spoke01-to-bastion')]",
                 "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_spoke_02_name'),'spoke02-to-bastion')]",
                 "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_spoke_03_name'),'spoke03-to-bastion')]",
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_ne_hub_name'))]",
                 "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_we_hub_name'))]",
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_ac_hub_name'))]",
                 "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_we_hub_name'), 'defaultRouteTable')]",
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_02_name'))]"
             ],
@@ -382,6 +384,8 @@
                 "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_spoke_02_name'),'spoke02-to-bastion')]",
                 "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('virtualNetworks_spoke_03_name'),'spoke03-to-bastion')]",
                 "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_ne_hub_name'))]",
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_we_hub_name'))]",
+                "[resourceId('Microsoft.Network/virtualHubs', parameters('virtualHubs_ac_hub_name'))]",
                 "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubs_ne_hub_name'), 'defaultRouteTable')]",
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_spoke_03_name'))]"
             ],
