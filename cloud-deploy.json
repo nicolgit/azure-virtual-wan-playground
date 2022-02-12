@@ -773,7 +773,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "linux-vm-deploy.json",
+                    "uri": "https://raw.githubusercontent.com/nicolgit/azure-virtual-wan-playground/main/linux-vm-deploy.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -808,7 +808,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "linux-vm-deploy.json",
+                    "uri": "https://raw.githubusercontent.com/nicolgit/azure-virtual-wan-playground/main/linux-vm-deploy.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -843,7 +843,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "linux-vm-deploy.json",
+                    "uri": "https://raw.githubusercontent.com/nicolgit/azure-virtual-wan-playground/main/linux-vm-deploy.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
