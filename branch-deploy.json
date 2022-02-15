@@ -1,0 +1,126 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "VM_Username": {
+            "defaultValue": "nicola",
+            "type": "String"
+        },
+        "VM_Password": {
+            "defaultValue": "password.123",
+            "type": "String"
+        },
+        "vmName": {
+            "defaultValue": "vm-xxx-01",
+            "type": "String"
+        },
+        "network_subnet_default": {
+            "defaultValue": "192.168.1.0/24",
+            "type": "String"
+        },
+        "network_subnet_gateway": {
+            "defaultValue": "192.168.2.0/24",
+            "type": "String"
+        },
+        "region": {
+            "defaultValue": "francecentral",
+            "type": "String"
+        } 
+    },
+    "variables": {
+        "vnet-name": "[concat(parameters('region'), '-vnet')]",    
+        "gateway-name": "[concat(parameters('region'), '-gateway')]",
+        "gateway-ip-name": "[concat(parameters('region'), '-gateway-ip')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-11-01",
+            "name": "[variables('vnet-name')]",
+            "location": "[parameters('region')]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('network_subnet_default')]",
+                        "[parameters('network_subnet_gateway')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "properties": {
+                            "addressPrefix": "[parameters('network_subnet_default')]",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    },
+                    {
+                        "name": "GatewaySubnet",
+                        "properties": {
+                            "addressPrefix": "[parameters('network_subnet_gateway')]",
+                            "serviceEndpoints": [],
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": [],
+                "enableDdosProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2020-11-01",
+            "name": "[variables('gateway-ip-name')]",
+            "location": "[parameters('region')]",
+            "sku": {
+                "name": "Basic",
+                "tier": "Regional"
+            },
+            "properties": {
+                "ipAddress": "20.199.119.186",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4,
+                "ipTags": []
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "vm01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet-name'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/nicolgit/azure-virtual-wan-playground/main/linux-vm-deploy.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualMachines_templateVMname_name": {
+                        "value": "[parameters('vmName')]"
+                    },
+                    "virtualNetworks_name": {
+                        "value": "[variables('vnet-name')]"
+                    },
+                    "virtualNetworks_subnet": {
+                        "value": "Default"
+                    },
+                    "virtualmachine_region": {
+                        "value": "[parameters('region')]"
+                    },
+                    "VM_Username": {
+                        "value": "[parameters('VM_Username')]"
+                    },
+                    "VM_Password": {
+                        "value": "[parameters('VM_Password')]"
+                    }
+                }
+            }
+        }
+    ]
+}

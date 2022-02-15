@@ -1,0 +1,22 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "VM_Username": {
+            "defaultValue": "nicola",
+            "type": "String"
+        },
+        "VM_Password": {
+            "defaultValue": "password.123",
+            "type": "String"
+        }
+    },
+    "variables": {
+        "vmName": "vm-france-01",
+        "network_subnet_default": "192.168.1.0/24",
+        "network_subnet_gateway": "192.168.2.0/24",	
+        "region": "francecentral"       
+    },
+    "resources": [
+    ]
+}
