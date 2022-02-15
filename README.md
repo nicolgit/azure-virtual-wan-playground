@@ -1,16 +1,13 @@
 # Create an Azure Virtual WAN playground to test configurations and customer scenarios
 
-This repo contains ARM template that can be used to deploy a _network playground_ composed by:
+This repo contains ARM templates that can be used to deploy a _network playground_ composed by:
 
 * an Azure Virtual WAN with 2 hubs and 1 secure hub.
-* a simulated on-premise architecture
+* 3 simulated on-premise branches
 
-All network are peered with a single network where a Bastion host is deployed to simplify direct access to all the machine in the lab.
+All networks are peered with a single network where a Bastion host is deployed to simplify direct access to all the machines in the laboratory. This network should not be considered as part of the solution, but only a connection facilitator. 
 
 All spokes are able to talk to any other spoke.
-
-
-
 
 
 # Deploy to Azure
@@ -19,10 +16,10 @@ You can use the following buttons to deploy the demo to your Azure subscription:
 | | playground parts| &nbsp; |
 |---|---|---|
 | 1 | deploys virtual WAN playground | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fazure-virtual-wan-playground%2Fmain%2Fcloud-deploy.json)
-| 2 | connect vNets to hubs | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fazure-virtual-wan-playground%2Fmain%2Fvnet-connections-deploy.json)
+| 2 | connect virtual networks spokes to hubs | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnicolgit%2Fazure-virtual-wan-playground%2Fmain%2Fvnet-connections-deploy.json)
 |3| deploys France branch | |
 |4| deploys Germany branch | |
-|5| deplolys Australia branch  | |
+|5| deploys Australia branch  | |
 
 
 # Architecture
@@ -49,33 +46,36 @@ The ARM template cloud-deploy deploys:
   * `bastion-network` with 2 subent used as common Bastion Gateway to allows over-HTTPS access to all the VMs
     * [Azure Bastion](https://docs.microsoft.com/en-us/azure/bastion/bastion-overview) is a service you deploy that lets you connect to a virtual machine using your browser and the Azure portal. The Azure Bastion service is a fully platform-managed PaaS service that you provision inside your virtual network. It provides secure and seamless RDP/SSH connectivity to your virtual machines directly from the Azure portal over TLS. When you connect via Azure Bastion, your virtual machines do not need a public IP address, agent, or special client software.
 
+`we-hub` is a secure hub but the ARM template does not configure it properly. The correct configuration of this hub will be part of one of the following scenarios.
+
+The site to site VPN connections shown in the architecture aren't automatically deployed and configured: their configuration is covered by one of the playground scenarios.
 
 
+All machines have same account and password. Default values (nicola/password.123) can be overrided because they are exposed as a script parameter. Also an auto shutdowm  (11PM CET) has been configured on all VMs to reduce cost.
 
+# Setup
+In order to deploy the solution click on "deploy to azure" button 1. This could require 30/45 minutes to complete. Once finished, click on "deploy to azure" button 2 responsible to connect virtual networks to the corresponding hubs.
 
-
-
-
---
-
-
-
-
-I had to decouple the vnet-to-hub connections provisioning because if keep in the same deploy where virtual hub is created, I receive random NOT FOUND errors (see below). 
+I had to decouple the vnet-to-hub connections provisioning because if it is keeped in the same deploy where virtual hub is created, I receive random NOT FOUND errors (see below). 
 
 ```json
 {
     "status": "Failed",
     "error": {
-        "message": "Operation f541fd00-439f-4e23-9505-a61edff6f335 not found.",
+        "message": "Operation <GUID> not found.",
         "details": []
     }
 }
 ```
 
-
 I did not investigate more about this because the testing nature of this laboratory, makes accettable to execute different deployments in sequence.
 
+Deploy the on branches (France, Germany. Australia) if needed by the plagraund scenario you want to implement.
 
-understand this configuration: https://blog.cloudtrooper.net/2020/11/17/virtual-wan-secure-hubs-in-multiple-region
+# Playground Scenarios
 
+* enable secure hub (outbound traffic to internet via Azure Firewall)
+* Connect France, Germany and Australia branches to the corresponding hubs.
+  * allow communication cross hubs
+  * allow communication between france and germany only
+* ...
