@@ -142,7 +142,7 @@
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('gateway-ip-name'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('gateway-name'), 'GatewaySubnet')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet-name'), 'GatewaySubnet')]"
                             }
                         }
                     }
