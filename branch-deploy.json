@@ -90,7 +90,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
-            "name": "vm01",
+            "name": "[parameters('vmName')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet-name'))]"
             ],
