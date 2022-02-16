@@ -1,0 +1,84 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "VM_Username": {
+            "defaultValue": "nicola",
+            "type": "String"
+        },
+        "VM_Password": {
+            "defaultValue": "password.123",
+            "type": "String"
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "france-branch-deploy",
+            "dependsOn": [
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/nicolgit/azure-virtual-wan-playground/main/france-deploy.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "VM_Username": {
+                        "Value": "[parameters('VM_Username')]"
+                    },
+                    "VM_Password": {
+                        "Value": "[parameters('VM_Password')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "germany-branch-deploy",
+            "dependsOn": [
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/nicolgit/azure-virtual-wan-playground/main/germany-deploy.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "VM_Username": {
+                        "Value": "[parameters('VM_Username')]"
+                    },
+                    "VM_Password": {
+                        "Value": "[parameters('VM_Password')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "australia-branch-deploy",
+            "dependsOn": [
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/nicolgit/azure-virtual-wan-playground/main/australia-deploy.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "VM_Username": {
+                        "Value": "[parameters('VM_Username')]"
+                    },
+                    "VM_Password": {
+                        "Value": "[parameters('VM_Password')]"
+                    }
+                }
+            }
+        }
+    ]
+}
