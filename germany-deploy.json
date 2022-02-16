@@ -1,0 +1,56 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "VM_Username": {
+            "defaultValue": "nicola",
+            "type": "String"
+        },
+        "VM_Password": {
+            "defaultValue": "password.123",
+            "type": "String"
+        }
+    },
+    "variables": {
+        "vmName": "vm-germany-01",
+        "network_subnet_default": "192.168.3.0/24",
+        "network_subnet_gateway": "192.168.4.0/24",	
+        "region": "germanywestcentral"       
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "name": "branch-deploy",
+            "dependsOn": [
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/nicolgit/azure-virtual-wan-playground/main/branch-deploy.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "VM_Username": {
+                        "Value": "[parameters('VM_Username')]"
+                    },
+                    "VM_Password": {
+                        "Value": "[parameters('VM_Password')]"
+                    },
+                    "vmName": {
+                        "Value": "[variables('vmName')]"
+                    },
+                    "network_subnet_default": {
+                        "Value": "[variables('network_subnet_default')]"
+                    },
+                    "network_subnet_gateway": {
+                        "Value": "[variables('network_subnet_gateway')]"
+                    },
+                    "region": {
+                        "Value": "[variables('region')]"
+                    } 
+                }
+            }
+        }
+    ]
+}
